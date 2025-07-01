@@ -6,11 +6,19 @@ import os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
+# Intentar cargar variables de entorno desde archivo .env si python-dotenv está disponible
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv no está instalado, continuar sin él
+    pass
+
 # URL base para la API de CoinGecko v3
 BASE_URL = "https://api.coingecko.com/api/v3"
 
-# API Key de CoinGecko
-API_KEY = "CG-kbwJNgHWSJWymkEj199gPaby"
+# API Key de CoinGecko - Leer desde variable de entorno
+API_KEY = os.getenv('API_KEY_GECKO')
 
 # Monedas a procesar
 COIN_LIST = ["bitcoin", "ethereum", "cardano"]
@@ -56,6 +64,19 @@ def ensure_output_directory():
         logger.info(f"Directorio de salida creado: {OUTPUT_DIR}")
 
 
+def validate_api_key():
+    """
+    Valida que la API key esté configurada.
+    
+    Returns:
+        bool: True si la API key está configurada, False en caso contrario
+    """
+    if not API_KEY:
+        logger.error("API_KEY_GECKO no está configurada en las variables de entorno")
+        return False
+    return True
+
+
 def download_crypto_data(coin_id, iso_date, verbose=False):
     """
     Función principal para descargar datos históricos de una criptomoneda.
@@ -71,6 +92,10 @@ def download_crypto_data(coin_id, iso_date, verbose=False):
     # Configurar logging
     global logger
     logger = setup_logging()
+    
+    # Validar API key
+    if not validate_api_key():
+        return False
     
     # Ajustar nivel de logging si se especifica verbose
     if verbose:

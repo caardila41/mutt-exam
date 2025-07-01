@@ -16,7 +16,14 @@ Script para descargar datos históricos de criptomonedas desde la API de CoinGec
 1. Clona o descarga este repositorio
 2. Instala las dependencias:
 ```bash
+# Instalar todas las dependencias (incluyendo python-dotenv)
+pip install -r requirements.txt
+
+# O instalar solo las dependencias básicas
 pip install click requests
+
+# Para soporte de archivos .env (opcional)
+pip install python-dotenv
 ```
 
 ## Uso
@@ -118,17 +125,60 @@ El script implementa un sistema de logging robusto con las siguientes caracterí
 - Archivos de respaldo: 3 archivos
 - Nombres: `crypto_fetch.log`, `crypto_fetch.log.1`, etc.
 
-## API Key
+## Configuración de API Key
 
-El script incluye una API key de CoinGecko configurada:
-```
-CG-kbwJNgHWSJWymkEj199gPaby
+El script requiere una API key de CoinGecko para funcionar. La API key se lee desde la variable de entorno `API_KEY_GECKO`.
+
+### Obtener API Key
+1. Ve a [CoinGecko API Pricing](https://www.coingecko.com/en/api/pricing)
+2. Regístrate para obtener una API key gratuita
+3. Copia tu API key
+
+### Configurar Variable de Entorno
+
+#### Opción 1: Variable de Entorno Temporal
+
+**Windows (PowerShell):**
+```powershell
+$env:API_KEY_GECKO="tu-api-key-aqui"
+python main.py 2024-12-30
 ```
 
-Esta key permite:
+**Windows (CMD):**
+```cmd
+set API_KEY_GECKO=tu-api-key-aqui
+python main.py 2024-12-30
+```
+
+**Linux/Mac:**
+```bash
+export API_KEY_GECKO="tu-api-key-aqui"
+python main.py 2024-12-30
+```
+
+#### Opción 2: Archivo .env (Recomendado)
+
+1. Instala python-dotenv:
+```bash
+pip install python-dotenv
+```
+
+2. Crea un archivo `.env` en el directorio del proyecto:
+```env
+API_KEY_GECKO=tu-api-key-aqui
+```
+
+3. Modifica el script para cargar el archivo .env (agregar al inicio de `fetch_crypto_data.py`):
+```python
+from dotenv import load_dotenv
+load_dotenv()
+```
+
+### Beneficios de la API Key
 - Acceso a datos históricos más antiguos
 - Mayor límite de solicitudes
 - Mejor estabilidad de la API
+- Soporte prioritario
 
 ## Manejo de Errores
 
@@ -181,12 +231,22 @@ El script puede descargar datos de cualquier criptomoneda disponible en CoinGeck
 
 ## Dependencias
 
+### Requeridas
 - `click`: Manejo de interfaz de línea de comandos
 - `requests`: Solicitudes HTTP
-- `logging`: Sistema de logging (incluido en Python)
-- `json`: Manejo de datos JSON (incluido en Python)
-- `datetime`: Manejo de fechas (incluido en Python)
-- `os`: Operaciones del sistema (incluido en Python)
+
+### Opcionales
+- `python-dotenv`: Para cargar variables de entorno desde archivo .env
+  ```bash
+  pip install python-dotenv
+  ```
+
+### Incluidas en Python
+- `logging`: Sistema de logging
+- `json`: Manejo de datos JSON
+- `datetime`: Manejo de fechas
+- `os`: Operaciones del sistema
+- `argparse`: Manejo de argumentos de línea de comandos
 
 ## Licencia
 

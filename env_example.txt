@@ -1,0 +1,26 @@
+# Configuración de la API de CoinGecko
+# Obtén tu API key gratuita en: https://www.coingecko.com/en/api/pricing
+
+# API Key de CoinGecko (reemplaza con tu clave real)
+API_KEY_GECKO=CG-kbwJNgHWSJWymkEj199gPaby
+
+# Nota: Este archivo es solo un ejemplo.
+# Para usar las variables de entorno:
+# 1. Copia este archivo como .env
+# 2. Reemplaza el valor con tu API key real
+# 3. El script leerá automáticamente la variable API_KEY_GECKO
+
+# Alternativas para configurar la variable de entorno:
+
+# En Windows (PowerShell):
+# $env:API_KEY_GECKO="tu-api-key-aqui"
+
+# En Windows (CMD):
+# set API_KEY_GECKO=tu-api-key-aqui
+
+# En Linux/Mac:
+# export API_KEY_GECKO="tu-api-key-aqui"
+
+# O crear un archivo .env y usar python-dotenv:
+# pip install python-dotenv
+# Luego agregar: from dotenv import load_dotenv; load_dotenv() al inicio del script 

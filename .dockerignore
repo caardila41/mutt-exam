@@ -1,0 +1,52 @@
+# Archivos de desarrollo
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de log
+*.log
+logs/
+
+# Datos generados
+crypto_data/
+*.json
+
+# Archivos de configuración local
+.env
+.env.local
+.env.production
+
+# Archivos de documentación
+README.md
+*.md
+
+# Archivos de Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Archivos de Git
+.git/
+.gitignore
+
+# Archivos temporales
+*.tmp
+*.temp 

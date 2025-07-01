@@ -13,6 +13,8 @@ Script para descargar datos históricos de criptomonedas desde la API de CoinGec
 
 ## Instalación
 
+### Opción 1: Instalación Local
+
 1. Clona o descarga este repositorio
 2. Instala las dependencias:
 ```bash
@@ -24,6 +26,26 @@ pip install click requests
 
 # Para soporte de archivos .env (opcional)
 pip install python-dotenv
+```
+
+### Opción 2: Docker (Recomendado)
+
+1. Asegúrate de tener Docker y Docker Compose instalados
+2. Configura tu API key:
+```bash
+export API_KEY_GECKO="tu-api-key-aqui"
+```
+
+3. Construye y ejecuta el contenedor:
+```bash
+# Construir imagen
+./docker-scripts.sh build
+
+# Iniciar en producción (con cron automático)
+./docker-scripts.sh start
+
+# O iniciar en modo desarrollo
+./docker-scripts.sh dev
 ```
 
 ## Uso
@@ -95,11 +117,19 @@ El script crea automáticamente la siguiente estructura:
 MuttExam/
 ├── main.py                   # Script principal para procesamiento múltiple
 ├── fetch_crypto_data.py      # Script individual para una moneda
+├── docker-scripts.sh         # Script de gestión de Docker
+├── Dockerfile                # Configuración de Docker
+├── docker-compose.yml        # Configuración de Docker Compose
+├── docker-compose.override.yml # Configuración para desarrollo
+├── docker-compose.prod.yml   # Configuración para producción
+├── requirements.txt          # Dependencias de Python
+├── env_example.txt           # Ejemplo de configuración de variables
 ├── crypto_data/              # Directorio de datos (creado automáticamente)
 │   ├── bitcoin_2017-12-30.json
 │   ├── ethereum_2017-12-30.json
 │   ├── cardano_2017-12-30.json
 │   └── ...
+├── logs/                     # Directorio de logs (Docker)
 ├── crypto_fetch.log          # Archivo de log principal
 ├── crypto_fetch.log.1        # Archivo de log rotado
 ├── crypto_fetch.log.2        # Archivo de log rotado
@@ -179,6 +209,75 @@ load_dotenv()
 - Mayor límite de solicitudes
 - Mejor estabilidad de la API
 - Soporte prioritario
+
+## Docker
+
+### Características del Contenedor
+
+- ✅ **Cron automático**: Ejecuta todos los días a las 3:00 AM
+- ✅ **Persistencia de datos**: Los datos se guardan en volúmenes Docker
+- ✅ **Health checks**: Monitoreo automático del estado del contenedor
+- ✅ **Logs rotativos**: Gestión automática de logs
+- ✅ **Modo desarrollo**: Para testing y desarrollo
+- ✅ **Modo producción**: Optimizado para despliegue
+
+### Comandos de Docker
+
+```bash
+# Construir imagen
+./docker-scripts.sh build
+
+# Iniciar en producción (con cron automático)
+./docker-scripts.sh start
+
+# Iniciar en modo desarrollo
+./docker-scripts.sh dev
+
+# Ver logs en tiempo real
+./docker-scripts.sh logs
+
+# Ver estado del contenedor
+./docker-scripts.sh status
+
+# Ejecutar prueba manual
+./docker-scripts.sh test
+
+# Abrir shell en el contenedor
+./docker-scripts.sh shell
+
+# Detener contenedor
+./docker-scripts.sh stop
+
+# Limpiar todo
+./docker-scripts.sh clean
+```
+
+### Configuración de Cron
+
+El contenedor ejecuta automáticamente el script todos los días a las 3:00 AM:
+
+```bash
+# Cron job configurado
+0 3 * * * cd /app && python main.py $(date -d 'yesterday' +%Y-%m-%d) >> /app/crypto_fetch.log 2>&1
+```
+
+### Volúmenes Docker
+
+- `./crypto_data:/app/crypto_data` - Datos de criptomonedas
+- `./logs:/app/logs` - Archivos de log
+- `./.env:/app/.env:ro` - Variables de entorno (solo lectura)
+
+### Variables de Entorno
+
+```bash
+# Requerida
+API_KEY_GECKO=tu-api-key-aqui
+
+# Opcionales
+TZ=UTC
+DEBUG=1
+NODE_ENV=production
+```
 
 ## Manejo de Errores
 

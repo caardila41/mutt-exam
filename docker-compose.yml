@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  crypto-fetcher:
+    build: .
+    container_name: crypto-data-fetcher
+    restart: unless-stopped
+    environment:
+      - API_KEY_GECKO=${API_KEY_GECKO}
+      - TZ=UTC
+    volumes:
+      # Persistir datos de criptomonedas
+      - ./crypto_data:/app/crypto_data
+      # Persistir logs
+      - ./logs:/app/logs
+      # Montar archivo .env si existe
+      - ./.env:/app/.env:ro
+    ports:
+      # Puerto para monitoreo (opcional)
+      - "8000:8000"
+    networks:
+      - crypto-network
+    healthcheck:
+      test: ["CMD", "pgrep", "cron"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Servicio opcional para monitoreo web (puedes descomentar si quieres)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: crypto-nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./crypto_data:/usr/share/nginx/html/crypto_data:ro
+  #   depends_on:
+  #     - crypto-fetcher
+  #   networks:
+  #     - crypto-network
+
+networks:
+  crypto-network:
+    driver: bridge
+
+volumes:
+  crypto_data:
+    driver: local
+  logs:
+    driver: local 

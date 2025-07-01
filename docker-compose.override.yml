@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  crypto-fetcher:
+    # Configuración para desarrollo
+    environment:
+      - API_KEY_GECKO=${API_KEY_GECKO:-CG-kbwJNgHWSJWymkEj199gPaby}
+      - TZ=UTC
+      - DEBUG=1
+    volumes:
+      # Montar código fuente para desarrollo
+      - .:/app
+      # Excluir directorios que no queremos sincronizar
+      - /app/__pycache__
+      - /app/.git
+      - /app/crypto_data
+      - /app/logs
+    # Comando para desarrollo (sin cron)
+    command: ["python", "main.py", "2024-12-30", "--verbose"]
+    # No reiniciar automáticamente en desarrollo
+    restart: "no" 

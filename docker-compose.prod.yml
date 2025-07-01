@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  crypto-fetcher:
+    # Configuración para producción
+    restart: unless-stopped
+    environment:
+      - API_KEY_GECKO=${API_KEY_GECKO}
+      - TZ=UTC
+      - NODE_ENV=production
+    volumes:
+      # Solo persistir datos y logs
+      - crypto_data_prod:/app/crypto_data
+      - logs_prod:/app/logs
+    # Sin puertos expuestos en producción
+    ports: []
+    # Health check más estricto
+    healthcheck:
+      test: ["CMD", "pgrep", "cron"]
+      interval: 60s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+    # Logging configurado
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  crypto_data_prod:
+    driver: local
+  logs_prod:
+    driver: local 
